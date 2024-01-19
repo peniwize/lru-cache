@@ -1,0 +1,29 @@
+/*!
+    \file "main.cpp"
+
+    Author: Matt Ervin <matt@impsoftware.org>
+    Formatting: 4 spaces/tab (spaces only; no tabs), 120 columns.
+    Doc-tool: Doxygen (http://www.doxygen.com/)
+*/
+
+//!\sa https://github.com/doctest/doctest/blob/master/doc/markdown/main.md
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+
+#include <doctest/doctest.h> //!\sa https://github.com/doctest/doctest/blob/master/doc/markdown/tutorial.md
+
+// [----------------(120 columns)---------------> Module Code Delimiter <---------------(120 columns)----------------]
+
+//
+//!\todo TODO: >>> Under Construction <<<
+//
+
+// [----------------(120 columns)---------------> Module Code Delimiter <---------------(120 columns)----------------]
+
+TEST_CASE("<description>")
+{
+    CHECK(<condition>);
+}
+
+/*
+    End of "main.cpp"
+*/
