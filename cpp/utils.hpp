@@ -20,6 +20,7 @@
 #include <doctest/doctest.h> //!\sa https://github.com/doctest/doctest/blob/master/doc/markdown/tutorial.md
 #include <functional>
 #include <iterator>
+#include <list>
 #include <memory>
 #include <queue>
 #include <unordered_map>

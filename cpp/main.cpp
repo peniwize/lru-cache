@@ -307,10 +307,84 @@ private:
     std::unordered_map<int, CacheNode*> index_{}; // Nodes index.
 };
 
+
+/*
+    Solution #3 (VALID):
+
+    This solution uses a hash table to index into a doubly linked list 
+    where each list node contains the value.  A list is used because it 
+    maintains the order of the values and provides O(1) insertion and 
+    removal.  Searching in the list would take O(1) time if it were done,
+    however it is not done, rather the hash table is used to find list 
+    items on O(1) time.  A hash table also has O(1) insertion and 
+    removal so the cumulative effect of the two data structures is 
+    overall O(1) time complexity.  Using a doubly linked list and a
+    hash table is a heavy weight solution for caching a small number of 
+    small objects, but the problem does state that up to 3000 objects
+    may be stored in the cache.  An optimal solution would be to determine
+    the threshold at which this solution out performs a simpler trivial 
+    implementation with just a vector and linear search and then choose 
+    which to use during construction (based on the cache capacity).
+
+    Time: O(1)  [for all operations, except destruction == O(n)]
+    Space: O(n)  [n = cache capacity]
+*/
+class LRUCache_Solution3 {
+    using list_t = std::list<std::pair<int, int>>;
+
+    void setMru(list_t::iterator node) noexcept {
+        nodes_.splice(nodes_.end(), nodes_, node);
+    }
+
+public:
+    LRUCache_Solution3(int capacity) : capacity_{std::move(capacity)} {}
+    
+    int get(int key) {
+        auto const iter = index_.find(key);
+        auto const found = index_.end() != iter;
+        return found ? (setMru(iter->second), iter->second->second) : -1;
+    }
+    
+    void put(int key, int value) {
+        auto const iter = index_.find(key);
+        auto const found = index_.end() != iter;
+        if (found) {
+            // Update node value and make node MRU.
+            iter->second->second = std::move(value);
+            setMru(iter->second);
+        } else {
+            list_t::iterator node{};
+            
+            auto const cacheIsFull = nodes_.size() == capacity_;
+            if (cacheIsFull) {
+                // Update LRU node value and make it MRU.
+                node = nodes_.begin();
+                index_.erase(node->first); // Remove old node index.
+                node->first = std::move(key);
+                node->second = std::move(value);
+                setMru(node);
+            } else {
+                // Add new node to cache and make it MRU.
+                nodes_.push_back(std::make_pair(std::move(key), std::move(value)));
+                node = --nodes_.end();
+            }
+
+            // Add node index.
+            index_.insert(std::make_pair(std::move(key), std::move(node)));
+        }
+    }
+
+private:
+    int capacity_{};
+    list_t nodes_{};
+    std::unordered_map<int, list_t::iterator> index_{}; // Nodes index.
+};
+
 // [----------------(120 columns)---------------> Module Code Delimiter <---------------(120 columns)----------------]
 
 //#define LRUCache LRUCache_Solution1
-#define LRUCache LRUCache_Solution2
+//#define LRUCache LRUCache_Solution2
+#define LRUCache LRUCache_Solution3
 
 void testLruCache(LRUCache& solution, vector<vector<int>> control)
 {
